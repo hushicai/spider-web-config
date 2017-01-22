@@ -23,7 +23,7 @@ class Rule extends Component {
         <td></td>
         <td></td>
         <td>
-          <Link to={'/rule/edit/' + rule.id}>Edit</Link>
+          <Link to={'/rule/' + rule.id}>Edit</Link>
           {' '}
           <a onClick={() => this.props.onDelete(rule.id)} href="javascript:;">Delete</a>
         </td>

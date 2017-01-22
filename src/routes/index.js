@@ -21,7 +21,7 @@ const routes = (
       <IndexRoute components={{main: Home}}></IndexRoute>
       <Route path="rule" components={{main: FilterRuleTableContainer}}></Route>
       <Route path="rule/add" components={{main: AddRuleContainer}}></Route>
-      <Route path="rule/edit/:id" components={{main: EditRuleContainer}}></Route>
+      <Route path="rule/:id" components={{main: EditRuleContainer}}></Route>
     </Route>
     <Route path="*" component={NotFound}></Route>
   </Route>

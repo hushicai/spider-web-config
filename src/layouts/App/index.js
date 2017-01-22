@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 
+import Breadcrumb from '../../components/Breadcrumb';
+
 function App(props) {
   const {
     main,
@@ -11,7 +13,9 @@ function App(props) {
       <header>
         <hgroup>
           <h1>爬虫配置系统</h1>
-          <h2>{location.pathname}</h2>
+          <h2>
+            <Breadcrumb pathname={location.pathname}></Breadcrumb>
+          </h2>
         </hgroup>
       </header>
       <main>
