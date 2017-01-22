@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import {Route, IndexRoute, hashHistory} from 'react-router';
+import {Route, IndexRoute} from 'react-router';
 
 import AppLayout from '../layouts/App';
 
