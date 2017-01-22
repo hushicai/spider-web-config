@@ -7,6 +7,10 @@ function ruleList(state = [], action) {
         ...state,
         action.rule
       ];
+    case ActionTypes.EDIT_RULE:
+      return state.map((rule) => {
+        return rule.id === action.id ? action.rule : rule;
+      });
     case ActionTypes.DELETE_RULE:
       return state.filter((rule) => {
         return rule.id !== action.id;

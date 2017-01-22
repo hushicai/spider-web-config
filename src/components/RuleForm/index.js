@@ -11,9 +11,23 @@ class RuleForm extends Component {
   constructor(props) {
     super(props);
 
+    console.log(this.props);
+
     this.onSubmit = this.onSubmit.bind(this);
   }
   render() {
+    let rule = {};
+
+    try {
+      rule = JSON.parse(this.props.rule);
+    }
+    catch (ex) {
+      rule = {};
+    }
+    delete rule.id;
+
+    rule = JSON.stringify(rule, null, 2);
+
     return (
       <form onSubmit={this.onSubmit}>
         <ReactAce
@@ -28,7 +42,7 @@ class RuleForm extends Component {
           showPrintMargin={false}
           tabSize={2}
           editorProps={{$blockScrolling: true}}
-          value={this.props.rule}
+          value={rule}
         />
         <div>
          <button type="submit">submit</button>
@@ -42,11 +56,25 @@ class RuleForm extends Component {
     // Ace Editor Instance
     let editor = ace.editor;
     let rule = JSON.parse(editor.getValue());
+    let ret = [
+      'rule'
+    ];
 
-    rule.id = 'rule:' + rule.domain + ':' + rule.alias;
+    if (rule.domain) {
+      ret.push(rule.domain);
+    }
+
+    if (rule.alias) {
+      rule.push(rule.alias);
+    }
+
+    rule.id = ret.join(':');
+
+    // 旧id
+    let oid = this.props.routeParams.id;
 
     // dispatch submit action to store
-    this.props.onSubmit(rule);
+    this.props.onSubmit(rule, oid);
 
     e.preventDefault();
   }

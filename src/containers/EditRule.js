@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import RuleForm from '../components/RuleForm';
+import {editRule} from '../actions';
+import {push} from 'react-router-redux';
 
 const mapStateToProps = (state, ownProps) => {
   const ruleList = state.ruleList;
@@ -10,15 +12,17 @@ const mapStateToProps = (state, ownProps) => {
     return rule.id === id;
   });
 
+  rule = rule || {};
+
   return {
-    rule: JSON.stringify(rule, null, 2)
+    rule: JSON.stringify(rule)
   };
 };
 
 const mapDispatchToProps =(dispatch, ownProps) => {
   return {
-    onSubmit: (rule) => {
-      dispatch(editRule(rule));
+    onSubmit: (rule, id) => {
+      dispatch(editRule(rule, id));
       dispatch(push('/rule'));
     }
   };

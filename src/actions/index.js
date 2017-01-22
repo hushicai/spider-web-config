@@ -19,10 +19,11 @@ export function addRule(rule) {
   };
 }
 
-export function editRule(rule) {
+export function editRule(rule, id) {
   return {
     type: ActionTypes.EDIT_RULE,
-    rule
+    rule,
+    id
   };
 }
 

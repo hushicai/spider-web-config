@@ -44,4 +44,4 @@ const value = {
   "use_proxy": false
 }
 
-export default JSON.stringify(value, null, 2);
+export default JSON.stringify(value);
