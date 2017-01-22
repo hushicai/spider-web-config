@@ -1,0 +1,30 @@
+
+.table {
+  $border-color: #ddd;
+
+  // table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid $border-color;
+  line-height: 1.4;
+
+  th,
+  td {
+    border: 1px solid $border-color;
+    padding: 8px;
+    word-wrap: break-word;
+  }
+
+  thead {
+    tr {
+      background-color: #F6F6F6;
+    }
+  }
+
+  tbody {
+    tr {}
+    tr:hover {
+      background-color: #FEF8E9;
+    }
+  }
+}
