@@ -11,7 +11,7 @@ import configureStore from './store/configureStore';
 import Root from './containers/Root';
 
 const initialState = {
-  domain: 'hushicai',
+  domain: '',
   ruleList: [
     {
       id: 'rule:hushicai.com:test',

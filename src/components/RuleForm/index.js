@@ -11,8 +11,6 @@ class RuleForm extends Component {
   constructor(props) {
     super(props);
 
-    console.log(this.props);
-
     this.onSubmit = this.onSubmit.bind(this);
   }
   render() {
@@ -44,9 +42,7 @@ class RuleForm extends Component {
           editorProps={{$blockScrolling: true}}
           value={rule}
         />
-        <div>
-         <button type="submit">submit</button>
-        </div>
+        <div><button type="submit">submit</button></div>
       </form>
     );
   }

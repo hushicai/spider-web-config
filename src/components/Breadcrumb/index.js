@@ -13,6 +13,11 @@ class Breadcrumb extends Component {
     let segments = pathname.split('/').filter((v) => {
       return v !== "";
     });
+
+    if (segments.length == 0) {
+      return null;
+    }
+
     let lastSegment = segments.pop();
     let ret = [
       {
@@ -21,7 +26,7 @@ class Breadcrumb extends Component {
       }
     ];
 
-    segments.reduce((accumulator, value, index) => {
+    segments.reduce((accumulator, value) => {
       let t = accumulator + value + '/';
 
       ret.push({
