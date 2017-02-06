@@ -3,10 +3,13 @@
  * @author hushicai(bluthcy@gmail.com)
  */
 
+import webpack from 'webpack';
 import path from 'path';
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
 
-const isDebug = !process.argv.includes('--release');
-const isVerbose = process.argv.includes('--verbose');
+const context = path.resolve(__dirname, '../src');
+
+export const isDebug = !(process.env.NODE_ENV === 'production');
 
 //
 // Common configuration chunk to be used for both
@@ -14,27 +17,23 @@ const isVerbose = process.argv.includes('--verbose');
 // -----------------------------------------------------------------------------
 
 const config = {
-  __is_debug: isDebug,
-  __is_verbose: isVerbose,
-
-  context: path.resolve(__dirname, '../src'),
+  context: context,
 
   output: {
     path: path.resolve(__dirname, '../build/'),
     publicPath: '/',
-    sourcePrefix: '  ',
-    pathinfo: isVerbose,
+    sourcePrefix: '  '
   },
 
   module: {
-    loaders: [
+    rules: [
       {
-        test: /\.jsx?$/,
-        loader: 'babel-loader',
+        test: /\.js(x)?$/,
         include: [
           path.resolve(__dirname, '../src'),
         ],
-        query: {
+        loader: 'babel-loader',
+        options: {
           // https://github.com/babel/babel-loader#options
           cacheDirectory: isDebug,
 
@@ -66,40 +65,82 @@ const config = {
               // https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-react-jsx-self
               'transform-react-jsx-self',
             ],
+            ['import', {"libraryName": "antd", "style": 'css'}]
           ],
-        },
+        }
       },
-      {
-        test: /\.css/,
-        loaders: [
-          'style-loader',
-          `css-loader?${JSON.stringify({
-            // CSS Loader https://github.com/webpack/css-loader
-            sourceMap: isDebug,
-            minimize: !isDebug
-          })}`,
-          'postcss-loader'
-        ]
-      },
-      {
+      isDebug ? {
         test: /\.scss/,
-        loaders: [
+        use: [
           'style-loader',
-          `css-loader?${JSON.stringify({
-            // CSS Loader https://github.com/webpack/css-loader
-            sourceMap: isDebug,
-            // CSS Modules https://github.com/css-modules/css-modules
-            modules: true,
-            // CSS Nano http://cssnano.co/options/
-            minimize: !isDebug
-          })}`,
-          'postcss-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              // CSS Loader https://github.com/webpack/css-loader
+              sourceMap: isDebug,
+              // CSS Modules https://github.com/css-modules/css-modules
+              modules: true,
+              // CSS Nano http://cssnano.co/options/
+              minimize: !isDebug
+            }
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: function () {
+                return [
+                  require('precss'),
+                  require('autoprefixer')({
+                    browsers: [
+                      '>1%',
+                      'last 4 versions',
+                      'Firefox ESR',
+                      'not ie < 9', // React doesn't support IE8 anyway
+                    ],
+                  })
+                ]
+              }
+            }
+          },
           'sass-loader'
         ]
-      },
-      {
-        test: /\.json$/,
-        loader: 'json-loader',
+      } :{
+        test: /\.scss/,
+        loader: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            {
+              loader: 'css-loader',
+              options: {
+                // CSS Loader https://github.com/webpack/css-loader
+                sourceMap: isDebug,
+                // CSS Modules https://github.com/css-modules/css-modules
+                modules: true,
+                // CSS Nano http://cssnano.co/options/
+                minimize: !isDebug
+              }
+            },
+            {
+              loader: 'postcss-loader',
+              options: {
+                plugins: function () {
+                  return [
+                    require('precss'),
+                    require('autoprefixer')({
+                      browsers: [
+                        '>1%',
+                        'last 4 versions',
+                        'Firefox ESR',
+                        'not ie < 9', // React doesn't support IE8 anyway
+                      ],
+                    })
+                  ]
+                }
+              }
+            },
+            'sass-loader'
+          ]
+        })
       },
       {
         test: /\.txt$/,
@@ -108,14 +149,14 @@ const config = {
       {
         test: /\.(ico|jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)(\?.*)?$/,
         loader: 'file-loader',
-        query: {
+        options: {
           name: isDebug ? '[path][name].[ext]?[hash:8]' : '[hash:8].[ext]',
         },
       },
       {
         test: /\.(mp4|webm|wav|mp3|m4a|aac|oga)(\?.*)?$/,
         loader: 'url-loader',
-        query: {
+        options: {
           name: isDebug ? '[path][name].[ext]?[hash:8]' : '[hash:8].[ext]',
           limit: 10000,
         },
@@ -124,44 +165,31 @@ const config = {
   },
 
   resolve: {
-    root: path.resolve(__dirname, '../src'),
-    modulesDirectories: ['node_modules'],
-    extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx', '.json'],
+    modules: [
+      path.resolve(__dirname, '../src'),
+      'node_modules'
+    ],
+    extensions: ['.js', '.jsx', '.json'],
   },
+
+  plugins: [
+    ...isDebug ? [] : [
+      new ExtractTextPlugin('app.css')
+    ],
+    new webpack.LoaderOptionsPlugin({
+      debug: isDebug
+    })
+  ],
 
   // Don't attempt to continue if there are any errors.
   bail: !isDebug,
 
   cache: isDebug,
-  debug: isDebug,
 
   stats: {
     colors: true,
-    reasons: isDebug,
-    hash: isVerbose,
-    version: isVerbose,
-    timings: true,
-    chunks: isVerbose,
-    chunkModules: isVerbose,
-    cached: isVerbose,
-    cachedAssets: isVerbose,
-  },
-
-  // The list of plugins for PostCSS
-  // https://github.com/postcss/postcss
-  postcss(bundler) {
-    return [
-      require('precss'),
-      require('autoprefixer')({
-        browsers: [
-          '>1%',
-          'last 4 versions',
-          'Firefox ESR',
-          'not ie < 9', // React doesn't support IE8 anyway
-        ],
-      }),
-    ];
-  },
+    reasons: isDebug
+  }
 };
 
 export default config;

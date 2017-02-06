@@ -10,8 +10,11 @@ import {hashHistory} from 'react-router';
 import configureStore from './store/configureStore';
 import Root from './containers/Root';
 
+import './styles/app.scss';
+
 const initialState = {
   domain: '',
+  loading: 0,
   ruleList: [
     {
       id: 'rule:hushicai.com:test',

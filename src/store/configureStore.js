@@ -8,11 +8,15 @@ import reducers from '../reducers';
 import thunk from 'redux-thunk';
 import {hashHistory} from 'react-router';
 import {routerMiddleware} from 'react-router-redux';
+import createLogger from 'redux-logger';
+
+const logger = createLogger();
 
 const configureStore = (preloadedState) => {
   const middlewares = [
     thunk,
-    routerMiddleware(hashHistory)
+    routerMiddleware(hashHistory),
+    logger
   ];
   const createStoreEnhancer = applyMiddleware(...middlewares)(createStore);
   const store = createStoreEnhancer(reducers, preloadedState);

@@ -3,25 +3,32 @@
  * @author hushicai(bluthcy@gmail.com)
  */
 
-import ActionTypes from '../constants/ActionTypes';
+import {
+  DO_FILTER_RULE,
+  ADD_RULE,
+  EDIT_RULE,
+  DELETE_RULE,
+  SHOW_LOADING,
+  HIDE_LOADING
+} from '../constants/ActionTypes';
 
 export function doFilterRule(domain) {
   return {
-    type: ActionTypes.DO_FILTER_RULE,
+    type: DO_FILTER_RULE,
     domain
   };
 }
 
 export function addRule(rule) {
   return {
-    type: ActionTypes.ADD_RULE,
+    type: ADD_RULE,
     rule
   };
 }
 
 export function editRule(rule, id) {
   return {
-    type: ActionTypes.EDIT_RULE,
+    type: EDIT_RULE,
     rule,
     id
   };
@@ -29,7 +36,19 @@ export function editRule(rule, id) {
 
 export function deleteRule(id) {
   return {
-    type: ActionTypes.DELETE_RULE,
+    type: DELETE_RULE,
     id
   };
+}
+
+export function showLoading() {
+  return {
+    type: SHOW_LOADING
+  };
+}
+
+export function hideLoading() {
+  return {
+    type: HIDE_LOADING
+  }
 }

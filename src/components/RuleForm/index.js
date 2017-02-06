@@ -4,8 +4,9 @@ import ReactAce from 'react-ace';
 import brace from 'brace';
 import 'brace/mode/json';
 import 'brace/theme/github';
-
 import styles from './index.scss';
+
+import Loading from '../../containers/Loading';
 
 class RuleForm extends Component {
   constructor(props) {
@@ -28,6 +29,7 @@ class RuleForm extends Component {
 
     return (
       <form onSubmit={this.onSubmit}>
+        <Loading />
         <ReactAce
           mode="json"
           theme="github"

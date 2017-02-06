@@ -1,17 +1,21 @@
-import ActionTypes from '../constants/ActionTypes';
+import {
+  ADD_RULE,
+  EDIT_RULE,
+  DELETE_RULE
+} from '../constants/ActionTypes';
 
 function ruleList(state = [], action) {
   switch (action.type) {
-    case ActionTypes.ADD_RULE:
+    case ADD_RULE:
       return [
         ...state,
         action.rule
       ];
-    case ActionTypes.EDIT_RULE:
+    case EDIT_RULE:
       return state.map((rule) => {
         return rule.id === action.id ? action.rule : rule;
       });
-    case ActionTypes.DELETE_RULE:
+    case DELETE_RULE:
       return state.filter((rule) => {
         return rule.id !== action.id;
       });

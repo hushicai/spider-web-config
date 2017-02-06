@@ -6,9 +6,6 @@ import webpack from 'webpack';
 import merge from 'webpack-merge';
 import config from './webpack.config.js';
 
-const isDebug = config.__is_debug;
-const isVerbose = config.__is_verbose;
-
 const serverConfig = merge(config, {
   entry: {
     server: './server.js',
