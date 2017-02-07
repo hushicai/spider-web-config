@@ -23,7 +23,6 @@ const mapDispatchToProps =(dispatch, ownProps) => {
   return {
     onSubmit: (rule, id) => {
       dispatch(editRule(rule, id));
-      dispatch(push('/rule'));
     }
   };
 };

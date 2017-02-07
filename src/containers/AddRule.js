@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {addRule, showLoading, hideLoading} from '../actions';
+import {addRule} from '../actions';
 import RuleForm from '../components/RuleForm';
-import {push} from 'react-router-redux';
 import DefaultRuleValue from '../constants/DefaultRuleValue';
 
 const mapStateToProps = (state, ownProps) => {
@@ -14,9 +13,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onSubmit: (rule) => {
-      dispatch(showLoading());
       dispatch(addRule(rule))
-      dispatch(push('/rule'));
     }
   };
 };

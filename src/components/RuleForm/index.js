@@ -63,7 +63,7 @@ class RuleForm extends Component {
     }
 
     if (rule.alias) {
-      rule.push(rule.alias);
+      ret.push(rule.alias);
     }
 
     rule.id = ret.join(':');

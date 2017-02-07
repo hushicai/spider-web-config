@@ -11,12 +11,18 @@ import webpackHotMiddleware from 'webpack-hot-middleware';
 import webpackClientConfig from '../config/webpack-client.config.js';
 import serveIndex from 'serve-index';
 import serveStatic from 'serve-static';
+import mockMiddleware from 'mock-middleware';
 
 const buildDir = path.resolve(__dirname, '../build');
+const mockDir = path.resolve(__dirname, '../mock');
 
 function startDevServer() {
   const app = express();
   const compiler = webpack(webpackClientConfig);
+
+  app.use(
+    mockMiddleware(mockDir)
+  );
 
   app.use(webpackDevMiddleware(compiler, {
     publicPath: webpackClientConfig.output.publicPath,
