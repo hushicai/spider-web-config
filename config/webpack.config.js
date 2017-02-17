@@ -104,7 +104,7 @@ const config = {
           },
           'sass-loader'
         ]
-      } :{
+      } : {
         test: /\.scss/,
         loader: ExtractTextPlugin.extract({
           fallback: 'style-loader',
