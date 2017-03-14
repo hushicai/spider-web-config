@@ -61,12 +61,9 @@
   "scripts": {
     "build:client": "cross-env NODE_ENV=production webpack --progress --config ./webpack/webpack-client.config.js",
     "build:server": "cross-env NODE_ENV=production webpack --progress --config ./webpack/webpack-server.config.js",
-    "watch": "cross-env NODE_ENV=development webpack --watch --progress --config ./webpack/webpack-server.config.js",
     "build": "concurrently \"npm run build:server\" \"npm run build:client\"",
-    "wait-for-server": "just-wait --pattern \"build/server.js\" && node ./build/server.js",
-    "dev": "concurrently \"npm run watch\" \"npm run wait-for-server\"",
-    "production": "concurrently \"npm run build\" \"npm run wait-for-server\"",
-    "start": "cross-env NODE_ENV=development babel-node ./bootstrap.js"
+    "serve": "node ./build/bootstrap.js",
+    "dev": "cross-env NODE_ENV=development babel-node ./bootstrap.js"
   },
   "repository": {
     "type": "git",
