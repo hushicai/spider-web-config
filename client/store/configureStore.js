@@ -6,28 +6,24 @@
 import {createStore, applyMiddleware} from 'redux';
 import reducers from '../reducers';
 import thunk from 'redux-thunk';
-import {hashHistory} from 'react-router';
-import {routerMiddleware} from 'react-router-redux';
 import createLogger from 'redux-logger';
 
 const logger = createLogger();
 
-const configureStore = (preloadedState) => {
-  const middlewares = [
+const configureStore = (preloadedState, middlewares = []) => {
+  middlewares = [
     thunk,
-    routerMiddleware(hashHistory),
+    ...middlewares,
     logger
   ];
   const createStoreEnhancer = applyMiddleware(...middlewares)(createStore);
   const store = createStoreEnhancer(reducers, preloadedState);
 
-  if (__DEV__) {
-    if (module.hot) {
-      module.hot.accept('../reducers', () => {
-        const nextReducers = require('../reducers').default
-        store.replaceReducer(nextReducers)
-      })
-    }
+  if (module.hot) {
+    module.hot.accept('../reducers', () => {
+      const nextReducers = require('../reducers').default
+      store.replaceReducer(nextReducers)
+    })
   }
 
   return store;

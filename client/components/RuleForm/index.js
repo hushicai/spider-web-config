@@ -1,12 +1,25 @@
 import React, {Component} from 'react';
-
-import ReactAce from 'react-ace';
-import brace from 'brace';
-import 'brace/mode/json';
-import 'brace/theme/github';
+// import ReactAce from 'react-ace';
+// import 'brace';
+// import 'brace/mode/json';
+// import 'brace/theme/github';
 import styles from './index.scss';
-
 import Loading from '../../containers/Loading';
+
+class Editor extends Component {
+  render () {
+    if (typeof window !== 'undefined') {
+      const ReactAce = require('react-ace').default;
+
+      require('brace/mode/json');
+      require('brace/theme/github');
+
+      return <ReactAce {...this.props} />
+    }
+
+    return null;
+  }
+}
 
 class RuleForm extends Component {
   constructor(props) {
@@ -30,7 +43,7 @@ class RuleForm extends Component {
     return (
       <form onSubmit={this.onSubmit}>
         <Loading />
-        <ReactAce
+        <Editor
           mode="json"
           theme="github"
           name="rule-editor"

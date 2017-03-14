@@ -27,12 +27,13 @@ class Breadcrumb extends Component {
     ];
 
     segments.reduce((accumulator, value) => {
-      let t = accumulator + value + '/';
+      let t = accumulator + '/' + value;
 
       ret.push({
         name: value,
         path: t
       });
+
       return t;
     }, '');
 
