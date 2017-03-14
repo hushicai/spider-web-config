@@ -2,7 +2,7 @@ import {
   ADD_RULE_SUCCESS,
   EDIT_RULE_SUCCESS,
   DELETE_RULE
-} from '../constants/ActionTypes';
+} from '../actions';
 
 function ruleList(state = [], action) {
   switch (action.type) {

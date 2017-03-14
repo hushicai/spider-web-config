@@ -5,6 +5,7 @@
 
 import path from 'path';
 import express from 'express';
+import bodyParser from 'body-parser';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -43,11 +44,11 @@ if (isDebug) {
   // Do "hot-reloading" of express stuff on the server
   // Throw away cached modules and re-require next time
   // Ensure there's no important state in there!
-  const watcher = chokidar.watch('./server');
+  const watcher = chokidar.watch(['./server', './client/ssr']);
 
   watcher.on('ready', function() {
     watcher.on('all', function() {
-      console.log("Clearing /server/ module cache from server");
+      console.log("Clearing `server` module cache from server");
       Object.keys(require.cache).forEach(function(id) {
         if (/[\/\\]server[\/\\]/.test(id)) {
           delete require.cache[id];
@@ -59,7 +60,7 @@ if (isDebug) {
   // Do "hot-reloading" of react stuff on the server
   // Throw away the cached client modules and let them be re-required next time
   compiler.plugin('done', function() {
-    console.log("Clearing /client/ module cache from server");
+    console.log("Clearing `client` module cache from server");
     Object.keys(require.cache).forEach(function(id) {
       if (/[\/\\]client[\/\\]/.test(id)) {
         delete require.cache[id];
@@ -68,12 +69,14 @@ if (isDebug) {
   });
 }
 
+app.use(bodyParser.urlencoded({extended: true}));
+
 // include server routes
 app.use((req, res, next) => {
   require('./server/app')(req, res, next);
 });
 
-// include client routes
+// include ssr routes
 app.use((req, res, next) => {
   require('./client/ssr')(req, res, next);
 });

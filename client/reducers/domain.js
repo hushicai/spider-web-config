@@ -1,4 +1,4 @@
-import {DO_FILTER_RULE} from '../constants/ActionTypes';
+import {DO_FILTER_RULE} from '../actions';
 
 export default function domain(state = '', action) {
   switch (action.type) {

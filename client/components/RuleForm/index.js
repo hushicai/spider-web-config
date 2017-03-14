@@ -1,25 +1,7 @@
 import React, {Component} from 'react';
-// import ReactAce from 'react-ace';
-// import 'brace';
-// import 'brace/mode/json';
-// import 'brace/theme/github';
 import styles from './index.scss';
 import Loading from '../../containers/Loading';
-
-class Editor extends Component {
-  render () {
-    if (typeof window !== 'undefined') {
-      const ReactAce = require('react-ace').default;
-
-      require('brace/mode/json');
-      require('brace/theme/github');
-
-      return <ReactAce {...this.props} />
-    }
-
-    return null;
-  }
-}
+import getRuleKey from '../../../common/helpers/getRuleKey';
 
 class RuleForm extends Component {
   constructor(props) {
@@ -28,6 +10,15 @@ class RuleForm extends Component {
     this.onSubmit = this.onSubmit.bind(this);
   }
   render() {
+    if (typeof window === 'undefined') {
+      return null;
+    }
+
+    const ReactAce = require('react-ace').default;
+
+    require('brace/mode/json');
+    require('brace/theme/github');
+
     let rule = {};
 
     try {
@@ -43,7 +34,7 @@ class RuleForm extends Component {
     return (
       <form onSubmit={this.onSubmit}>
         <Loading />
-        <Editor
+        <ReactAce
           mode="json"
           theme="github"
           name="rule-editor"
@@ -67,19 +58,9 @@ class RuleForm extends Component {
     // Ace Editor Instance
     let editor = ace.editor;
     let rule = JSON.parse(editor.getValue());
-    let ret = [
-      'rule'
-    ];
+    const key = getRuleKey(rule);
 
-    if (rule.domain) {
-      ret.push(rule.domain);
-    }
-
-    if (rule.alias) {
-      ret.push(rule.alias);
-    }
-
-    rule.id = ret.join(':');
+    rule.id = key;
 
     // 旧id
     let oid = this.props.routeParams.id;
@@ -88,6 +69,7 @@ class RuleForm extends Component {
     this.props.onSubmit(rule, oid);
 
     e.preventDefault();
+    e.stopPropagation();
   }
 }
 

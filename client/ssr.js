@@ -14,7 +14,6 @@ import {match, RouterContext} from 'react-router';
 import routes from './routes';
 import Html from './components/Html';
 import configureStore from './store/configureStore';
-import apiMiddleware from './middlewares/api';
 
 const initialState = {
   domain: '',

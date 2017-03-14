@@ -1,4 +1,4 @@
-import {SHOW_LOADING, HIDE_LOADING} from '../constants/ActionTypes';
+import {SHOW_LOADING, HIDE_LOADING} from '../actions';
 
 function loading(state = 0, action) {
   switch (action.type) {
