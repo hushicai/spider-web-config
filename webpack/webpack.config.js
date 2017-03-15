@@ -16,7 +16,11 @@ var config = {
   },
   module: {
     rules: [
-      {test: /\.js$/, loader: "babel-loader"},
+      {
+        test: /\.js$/,
+        loader: "babel-loader",
+        exclude: /node_modules/
+      },
       {test: /\.png$/, loader: "url-loader" },
       {test: /\.jpg$/, loader: "file-loader" }
     ]

@@ -4,7 +4,7 @@ import Breadcrumb from '../../components/Breadcrumb';
 
 function App(props) {
   const {
-    main,
+    children,
     location
   } = props;
 
@@ -19,7 +19,7 @@ function App(props) {
         </hgroup>
       </header>
       <main>
-        {main}
+        {children}
       </main>
       <footer>
         <p>&copy;2017</p>

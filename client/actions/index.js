@@ -4,15 +4,28 @@
  */
 
 import {push} from 'react-router-redux';
-import {post} from '../lib/ajax';
+import * as ajax from '../lib/ajax';
 
 // action types;
+export const GET_RULE_LIST_DONE = 'GET_RULE_LIST_DONE';
 export const DO_FILTER_RULE = 'DO_FILTER_RULE';
 export const ADD_RULE = 'ADD_RULE';
 export const EDIT_RULE = 'EDIT_RULE';
 export const DELETE_RULE = 'DELETE_RULE';
 export const SHOW_LOADING = 'SHOW_LOADING';
 export const HIDE_LOADING = 'HIDE_LOADING';
+
+export function getRuleList() {
+  return function (dispatch) {
+    return ajax.get('/api-rule/list')
+      .then((data) => {
+        dispatch({
+          type: GET_RULE_LIST_DONE,
+          data: data
+        });
+      });
+  }
+}
 
 // action creators
 export function doFilterRule(domain) {
@@ -26,10 +39,9 @@ export function addRule(rule) {
   return function(dispatch) {
     dispatch(showLoading());
 
-    return post({
-      url: '/api-rule/add',
+    return ajax.post('/api-rule/add', {
       data: {
-        rule: rule
+        rule: JSON.stringify(rule)
       }
     }).then(() => {
       dispatch(hideLoading());
@@ -42,11 +54,10 @@ export function editRule(rule, id) {
   return (dispatch) => {
     dispatch(showLoading());
 
-    return post({
-      url: '/api-rule/edit',
+    return ajax.post('/api-rule/edit', {
       data: {
         id: id,
-        rule: rule
+        rule: JSON.stringify(rule)
       }
     }).then(() => {
       dispatch(hideLoading());

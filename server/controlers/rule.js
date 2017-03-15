@@ -7,38 +7,42 @@ import createJSON from '../helpers/createJSON';
 import * as ruleModel from '../models/rule';
 
 // rule list
-export function list(req, res) {
-  ruleModel.list((err, result) => {
-    let d = {};
+export async function list(req, res) {
+  try {
+    let result = await ruleModel.getList();
 
-    if (err) {
-      d = createJSON({msg: '获取失败', code: 1});
-    } else {
-      d = createJSON({msg: '获取成功', data: {list: result}});
-    }
+    let d = createJSON({data: {list: result}});
 
     res.status(200).json(d);
-  });
+  }
+  catch (ex) {
+    let d = createJSON({code: 1});
+
+    res.status(200).json(d);
+  }
 }
 // rule detail
 export function detail(req, res) {}
 // add rule
-export function add(req, res) {
+export async function add(req, res) {
   let {rule} = req.body;
 
   rule = JSON.parse(rule);
 
-  ruleModel.add(rule, (err, result) => {
-    let d;
-
-    if (err) {
-      d = createJSON({msg: '添加失败', code: 1});
-    } else {
-      d = createJSON({msg: '添加成功'});
-    }
+  try {
+    let result = await ruleModel.add(rule);
+    let d = createJSON({msg: '添加成功'});
 
     res.status(200).json(d);
-  });
+  }
+  catch (ex) {
+    let d = createJSON({
+      msg: '添加失败',
+      code: 1
+    });
+
+    res.status(200).json(d);
+  }
 }
 // edit rule
 export function edit(req, res) {

@@ -15,7 +15,8 @@ const cssLoaders = [
     options: {
       sourceMap: isDebug,
       modules: true,
-      minimize: false
+      minimize: false,
+      localIdentName: '[name]_[local]__[hash:base64:5]'
     }
   },
   {

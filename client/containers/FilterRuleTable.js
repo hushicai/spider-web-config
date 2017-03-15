@@ -1,27 +1,32 @@
 
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {deleteRule, doFilterRule} from '../actions';
+import {deleteRule, doFilterRule, getRuleList} from '../actions';
 import FilterRuleTable from '../components/FilterRuleTable';
 
 const mapStateToProps = (state, ownProps) => {
-  const {domain, ruleList} = state;
+  const {domain, rules} = state;
 
   return {
     domain: domain,
-    ruleList: ruleList.filter((rule) => {
+    ruleList: rules.list.filter((rule) => {
       return (rule.domain || '').indexOf(domain) !== -1;
-    })
+    }),
+    loaded: rules.loaded
   };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
+    // dispatch: dispatch,
     onDelete: (id) => {
-      dispatch(deleteRule(id));
+      return dispatch(deleteRule(id));
     },
     onFilter: (domain) => {
-      dispatch(doFilterRule(domain));
+      return dispatch(doFilterRule(domain));
+    },
+    getRuleList: () => {
+      return dispatch(getRuleList());
     }
   };
 };

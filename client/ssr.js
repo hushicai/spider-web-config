@@ -15,36 +15,46 @@ import routes from './routes';
 import Html from './components/Html';
 import configureStore from './store/configureStore';
 
-const initialState = {
-  domain: '',
-  loading: 0,
-  ruleList: [
-    {
-      id: 'rule:hushicai.com:test',
-      domain: 'hushicai.com'
-    }
-  ]
-};
-const store = configureStore(initialState);
 const router = express.Router();
 
 // https://medium.com/front-end-developers/handcrafting-an-isomorphic-redux-application-with-love-40ada4468af4#.kh5w12as3
 // https://github.com/facebook/react/issues/1739
 
 router.get('*', (req, res, next) => {
-  match({routes: routes, location: req.url}, (err, redirectLocation, renderProps) => {
+  console.log(req.url);
+  match({routes: routes, location: req.url}, async (err, redirectLocation, renderProps) => {
     if (err) {
     } else if (redirectLocation) {
     } else if (renderProps) {
-      const body = ReactDOMServer.renderToString(
-        <Provider store={store}>
-          <RouterContext {...renderProps} />
-        </Provider>
-      );
-      const state = store.getState();
-      const html = ReactDOMServer.renderToStaticMarkup(<Html children={body} state={state} />);
+      const store = configureStore();
+      const dispatch = store.dispatch;
+      const components = renderProps.components;
+      const params = renderProps.params;
+      const needs = components.reduce((prev, current) => {
+        if (current) {
+          return (current.needs || []).concat(prev);
+        }
+        return prev;
+      }, []);
+      const promises = needs.map((need) => {
+        return dispatch(need(params));
+      });
+      try {
+        let result = await Promise.all(promises);
+        const state = store.getState();
+        const body = ReactDOMServer.renderToString(
+          <Provider store={store}>
+            <RouterContext {...renderProps} />
+          </Provider>
+        );
+        const html = ReactDOMServer.renderToStaticMarkup(<Html children={body} state={state} />);
 
-      res.status(200).send(html);
+        res.status(200).send(html);
+      }
+      catch (ex) {
+        console.log(ex);
+        res.set({'content-type': 'text/html'}).status(500).send(ex || 'Internal Server Error');
+      }
     }
   });
 });

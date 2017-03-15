@@ -18,10 +18,10 @@ import EditRuleContainer from '../containers/EditRule';
 const routes = (
   <Route>
     <Route path="/" component={AppLayout}>
-      <IndexRoute components={{main: Home}}></IndexRoute>
-      <Route path="rule" components={{main: FilterRuleTableContainer}}></Route>
-      <Route path="rule/add" components={{main: AddRuleContainer}}></Route>
-      <Route path="rule/:id" components={{main: EditRuleContainer}}></Route>
+      <IndexRoute component={Home}></IndexRoute>
+      <Route path="rule" component={FilterRuleTableContainer}></Route>
+      <Route path="rule/add" component={AddRuleContainer}></Route>
+      <Route path="rule/:id" component={EditRuleContainer}></Route>
     </Route>
     <Route path="*" component={NotFound}></Route>
   </Route>

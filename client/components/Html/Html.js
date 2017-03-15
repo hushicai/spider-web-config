@@ -27,7 +27,7 @@ class Html extends Component {
         <body>
           <div id="root"
             dangerouslySetInnerHTML={
-              {__html: process.env.NODE_ENV === 'production' ? children : ''}
+              {__html: children}
             }
           />
 

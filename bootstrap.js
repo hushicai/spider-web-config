@@ -6,9 +6,9 @@
 import path from 'path';
 import express from 'express';
 import bodyParser from 'body-parser';
+import {host, port} from './common/config';
 
 const app = express();
-const port = process.env.PORT || 3000;
 const isDebug = process.env.NODE_ENV !== 'production';
 
 if (isDebug) {
@@ -21,7 +21,7 @@ if (isDebug) {
   const sass = require('node-sass');
 
   cssModulesRequireHook({
-    generateScopedName: '[name]__[local]___[hash:base64:5]',
+    generateScopedName: '[name]_[local]__[hash:base64:5]',
     extensions: ['.scss'],
     preprocessCss: (css, filename) => {
       return sass.renderSync({
@@ -82,6 +82,6 @@ app.use((req, res, next) => {
 });
 
 app.listen(port, () => {
-  console.log(`Node.js app is running at http://localhost:${port}/`);
+  console.log(`Node.js app is running at http://${host}:${port}/`);
 });
 

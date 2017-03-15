@@ -10,7 +10,7 @@ import createLogger from 'redux-logger';
 
 const logger = createLogger();
 
-const configureStore = (preloadedState, middlewares = []) => {
+const configureStore = (preloadedState = {}, middlewares = []) => {
   middlewares = [
     thunk,
     ...middlewares,

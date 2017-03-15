@@ -6,50 +6,56 @@
 import redis from 'redis';
 import settings from '../settings';
 import getRuleKey from '../../common/helpers/getRuleKey';
+import promisify from '../helpers/promisify';
 
 const client = redis.createClient(settings.rule_redis_db);
 
-export function add(rule, callback) {
+const hmset = promisify(client.hmset, client);
+const hgetall = promisify(client.hgetall, client);
+const keys = promisify(client.keys, client);
+
+export async function add(rule) {
   const key = getRuleKey(rule);
 
-  client.hmset(key, rule, (err, result) => {
-    if (err) {
-      console.log(err);
-      return callback(err);
-    }
+  try {
+    let result = await hmset(key, rule);
 
-    callback(err, result);
-  });
+    return result;
+  }
+  catch (ex) {
+    console.log(ex);
+    return ex;
+  }
 }
 
-function makeTask(key) {
-  return new Promise(function (resolve, reject) {
-    client.hgetall(key, (err, result) => {
-      if (err) {
-        console.log(err);
-        return reject(err);
-      }
+async function __makeTask(key) {
+  try {
+    let result = await hgetall(key);
 
-      result.id = key;
+    result.id = key;
 
-      resolve(result);
-    });
-  });
+    return result;
+  }
+  catch (ex) {
+    console.log(ex);
+
+    return ex;
+  }
 }
 
-export function list(callback) {
-  client.keys('rule:*', (err, keys) => {
-    if (err) {
-      console.log(err);
-      return callback(err);
-    }
-
-    let tasks = keys.map((key) => {
-      return makeTask(key);
-    });
-
-    Promise.all(tasks).then((result) => {
-      callback(err, result);
-    });
+export async function getList(callback) {
+  let result = await keys('rule:*');
+  let tasks = result.map((key) => {
+    return __makeTask(key)
   });
+
+  try {
+    let result = await Promise.all(tasks);
+
+    return result;
+  }
+  catch (ex) {
+    console.log(ex);
+    return ex;
+  }
 }
