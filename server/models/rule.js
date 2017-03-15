@@ -22,4 +22,34 @@ export function add(rule, callback) {
   });
 }
 
-export function list() {}
+function makeTask(key) {
+  return new Promise(function (resolve, reject) {
+    client.hgetall(key, (err, result) => {
+      if (err) {
+        console.log(err);
+        return reject(err);
+      }
+
+      result.id = key;
+
+      resolve(result);
+    });
+  });
+}
+
+export function list(callback) {
+  client.keys('rule:*', (err, keys) => {
+    if (err) {
+      console.log(err);
+      return callback(err);
+    }
+
+    let tasks = keys.map((key) => {
+      return makeTask(key);
+    });
+
+    Promise.all(tasks).then((result) => {
+      callback(err, result);
+    });
+  });
+}

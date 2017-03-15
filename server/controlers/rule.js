@@ -7,7 +7,19 @@ import createJSON from '../helpers/createJSON';
 import * as ruleModel from '../models/rule';
 
 // rule list
-export function list(req, res) {}
+export function list(req, res) {
+  ruleModel.list((err, result) => {
+    let d = {};
+
+    if (err) {
+      d = createJSON({msg: '获取失败', code: 1});
+    } else {
+      d = createJSON({msg: '获取成功', data: {list: result}});
+    }
+
+    res.status(200).json(d);
+  });
+}
 // rule detail
 export function detail(req, res) {}
 // add rule

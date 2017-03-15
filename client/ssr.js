@@ -28,6 +28,9 @@ const initialState = {
 const store = configureStore(initialState);
 const router = express.Router();
 
+// https://medium.com/front-end-developers/handcrafting-an-isomorphic-redux-application-with-love-40ada4468af4#.kh5w12as3
+// https://github.com/facebook/react/issues/1739
+
 router.get('*', (req, res, next) => {
   match({routes: routes, location: req.url}, (err, redirectLocation, renderProps) => {
     if (err) {
