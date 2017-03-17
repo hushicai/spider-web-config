@@ -4,9 +4,9 @@
  */
 
 import redis from 'redis';
-import settings from '../settings';
-import getRuleKey from '../../common/helpers/getRuleKey';
-import promisify from '../helpers/promisify';
+import settings from '../../settings';
+import getRuleKey from '../../common/getRuleKey';
+import promisify from '../../common/promisify';
 
 const client = redis.createClient(settings.rule_redis_db);
 

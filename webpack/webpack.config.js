@@ -9,6 +9,7 @@ var isDebug = process.env.NODE_ENV !== 'production';
 var buildPath = path.resolve(__dirname, '../build');
 
 var config = {
+  context: path.resolve(__dirname, '../'),
   devtool: isDebug ? 'source-map': '',
   output: {
     path: buildPath,

@@ -12,8 +12,7 @@ var nodeExternals = require('webpack-node-externals');
 var serverConfig = merge(config, {
   name: "server",
   entry: [
-    'webpack/hot/poll?1000',
-    './server/app.js'
+    '../server.js'
   ],
   target: "node",
   output: {

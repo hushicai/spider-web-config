@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import styles from './index.scss';
 import Loading from '../../containers/Loading';
-import getRuleKey from '../../../common/helpers/getRuleKey';
+import getRuleKey from '../../../common/getRuleKey';
 
 class RuleForm extends Component {
   constructor(props) {
