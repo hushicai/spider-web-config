@@ -5,6 +5,8 @@
 
 import React, {Component} from 'react';
 
+import styles from './Html.scss';
+
 class Html extends Component {
   render() {
     const {state, children} = this.props;
@@ -18,7 +20,7 @@ class Html extends Component {
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           {
             (() => {
-              if (process.env.NODE_ENV === 'production') {
+              if (process.env.NODE_ENV !== 'development') {
                return <link rel="stylesheet" href="/client.css" />
               }
             })()

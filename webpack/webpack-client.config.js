@@ -9,41 +9,18 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var merge = require('webpack-merge');
 var isDebug = process.env.NODE_ENV !== 'production';
 
-const cssLoaders = [
-  {
-    loader: 'css-loader',
-    options: {
-      sourceMap: isDebug,
-      modules: true,
-      minimize: false,
-      localIdentName: '[name]_[local]__[hash:base64:5]'
-    }
-  },
-  {
-    loader: 'postcss-loader',
-    options: {
-      plugins: [
-        require('autoprefixer')({
-          browsers: [
-            '>1%',
-            'last 4 versions',
-            'Firefox ESR',
-            'not ie < 9', // React doesn't support IE8 anyway
-          ]
-        })
-      ]
-    }
-  },
-  'sass-loader'
-];
+const {cssLoader, postcssLoader, sassLoader} = require('./loaderConfig');
+
+const entry = ['./client/app.js'];
+
+if (isDebug) {
+  entry.unshift('webpack-hot-middleware/client?reload=true');
+}
 
 var clientConfig = merge(config, {
   name: "browser",
   target: 'web',
-  entry: [
-    "webpack-hot-middleware/client",
-    "./client/app.js"
-  ],
+  entry: entry,
   output: {
     filename: "client.js",
   },
@@ -53,13 +30,19 @@ var clientConfig = merge(config, {
         test: /\.scss$/,
         use: [
           'style-loader',
-          ...cssLoaders
+          cssLoader,
+          postcssLoader,
+          sassLoader
         ]
       } : {
         test: /\.scss$/,
         loader: ExtractTextPlugin.extract({
           fallback: 'style-loader',
-          use: cssLoaders
+          use: [
+            cssLoader,
+            postcssLoader,
+            sassLoader
+          ]
         })
       }
     ]
@@ -72,7 +55,11 @@ var clientConfig = merge(config, {
           warnings: false
         }
       })
-    ]
+    ],
+    new webpack.DefinePlugin({
+      __CLIENT__: true,
+      __SERVER__: false
+    })
   ]
 });
 

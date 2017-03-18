@@ -14,16 +14,11 @@
     "body-parser": "^1.17.1",
     "brace": "^0.10.0",
     "classnames": "^2.2.5",
-    "concurrently": "^3.4.0",
     "cross-env": "^3.2.3",
     "css-loader": "^0.26.1",
-    "css-modules-require-hook": "^4.0.5",
     "express": "^4.14.0",
     "extract-text-webpack-plugin": "^2.0.0-rc.3",
     "file-loader": "^0.9.0",
-    "flux": "^3.1.2",
-    "html-webpack-harddisk-plugin": "^0.0.2",
-    "html-webpack-plugin": "^2.28.0",
     "immutable": "^3.8.1",
     "isomorphic-fetch": "^2.2.1",
     "json-loader": "^0.5.4",
@@ -46,25 +41,28 @@
     "url-loader": "^0.5.7",
     "url-search-params": "^0.6.1",
     "webpack": "^2.2.1",
-    "webpack-merge": "^2.6.1",
-    "window-or-global": "^1.0.1"
+    "webpack-merge": "^2.6.1"
   },
   "devDependencies": {
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-latest": "^6.22.0",
     "babel-preset-react": "^6.23.0",
     "babel-preset-stage-0": "^6.22.0",
-    "chokidar": "^1.6.1",
-    "just-wait": "^1.0.11",
     "webpack-dev-middleware": "^1.10.1",
     "webpack-hot-middleware": "^2.17.1",
-    "webpack-node-externals": "^1.5.4"
+    "webpack-node-externals": "^1.5.4",
+    "write-file-webpack-plugin": "^4.0.0"
   },
   "scripts": {
     "build:client": "cross-env NODE_ENV=production webpack --progress --config ./webpack/webpack-client.config.js",
     "build:server": "cross-env NODE_ENV=production webpack --progress --config ./webpack/webpack-server.config.js",
     "build": "npm-run-all -p build:server build:client",
-    "dev": "cross-env NODE_ENV=development babel-node ./server.js"
+
+    "dev:server": "cross-env NODE_ENV=development node ./server.js",
+    "prod:server": "cross-env NODE_ENV=production node ./server.js",
+
+    "dev": "npm-run-all dev:server",
+    "prod": "npm-run-all -s build prod:server"
   },
   "repository": {
     "type": "git",

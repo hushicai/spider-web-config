@@ -3,16 +3,23 @@
  * @author hushicai(bluthcy@gmail.com)
  */
 
-var config = require('./webpack.config');
+var path = require('path');
 var webpack = require('webpack');
+var config = require('./webpack.config');
 var merge = require('webpack-merge');
 var isDebug = process.env.NODE_ENV !== 'production';
 var nodeExternals = require('webpack-node-externals');
 
+const {cssLoaderLocals, sassLoader, urlLoader} = require('./loaderConfig');
+// const styleCollectorLoader = path.resolve(__dirname, '../tools/styleCollectorLoader');
+
+urlLoader.options.emitFile = false;
+
 var serverConfig = merge(config, {
   name: "server",
   entry: [
-    '../server.js'
+    // relative to `context`
+    './server/routes.js'
   ],
   target: "node",
   output: {
@@ -24,30 +31,17 @@ var serverConfig = merge(config, {
       {
         test: /\.scss$/,
         use: [
-          {
-            loader: 'css-loader/locals',
-            options: {
-              sourceMap: isDebug,
-              modules: true,
-              minimize: !isDebug
-            }
-          },
-          {
-            loader: 'postcss-loader',
-            options: {
-              plugins: [
-                require('autoprefixer')({
-                  browsers: [
-                    '>1%',
-                    'last 4 versions',
-                    'Firefox ESR',
-                    'not ie < 9', // React doesn't support IE8 anyway
-                  ]
-                })
-              ]
-            }
-          },
-          'sass-loader'
+          // {
+            // loader: styleCollectorLoader
+          // },
+          cssLoaderLocals,
+          sassLoader
+        ]
+      },
+      {
+        test: /\.jpe?g|png|gif$/,
+        use: [
+          urlLoader
         ]
       }
     ]
@@ -57,7 +51,12 @@ var serverConfig = merge(config, {
     __dirname: true,
     __filename: true
   },
-  plugins: []
+  plugins: [
+    new webpack.DefinePlugin({
+      __CLIENT__: false,
+      __SERVER__: true
+    })
+  ]
 });
 
 module.exports = serverConfig;

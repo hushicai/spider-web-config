@@ -19,63 +19,74 @@ import promisify from '../common/promisify';
 
 const pmatch = promisify(match);
 
-async function _render(renderProps) {
-  const store = configureStore();
-  const components = renderProps.components;
-  const params = renderProps.params;
-  const needs = components.reduce((prev, current) => {
-    if (current) {
-      return (current.needs || []).concat(prev);
-    }
-    return prev;
-  }, []);
-  const promises = needs.map((need) => {
-    return store.dispatch(need(params));
-  });
+const isDebug = process.env.NODE_ENV !== 'production';
 
-  try {
-    await Promise.all(promises);
-  }
-  catch (ex) {
-    console.log(ex);
-  }
-
+function _renderHtml (store, children = '') {
   const state = store.getState();
-  const body = ReactDOMServer.renderToString(
-    <Provider store={store}>
-      <RouterContext {...renderProps} />
-    </Provider>
-  );
-  const html = ReactDOMServer.renderToStaticMarkup(<Html children={body} state={state} />);
+  const html = ReactDOMServer.renderToStaticMarkup(<Html children={children} state={state} />);
 
   return html;
 }
 
-async function renderHtml (url) {
+async function serverSideRender (url) {
+  const store = configureStore();
+
+  // 开发模式下，不启用重构模式
+  if (process.env.NODE_ENV === 'development') {
+    let html = _renderHtml(store);
+
+    return {
+      status: 200,
+      data: html
+    };
+  }
+
   try {
     let [redirectLocation, renderProps] = await pmatch({routes: routes, location: url});
 
     if (redirectLocation) {
       return {
         status: 302,
-        location: redirectLocation
+        data: redirectLocation
       };
     }
 
-    let html = await _render(renderProps);
+    const components = renderProps.components;
+    const params = renderProps.params;
+    const needs = components.reduce((prev, current) => {
+      if (current) {
+        return (current.needs || []).concat(prev);
+      }
+      return prev;
+    }, []);
+    const promises = needs.map((need) => {
+      return store.dispatch(need(params));
+    });
+
+    // 等待所有请求
+    await Promise.all(promises);
+
+    const children = ReactDOMServer.renderToString(
+      <Provider store={store}>
+        <RouterContext {...renderProps} />
+      </Provider>
+    );
+
+    const html = _renderHtml(store, children);
 
     return {
       status: 200,
-      html: html
+      data: html
     };
   }
   catch (ex) {
+    console.log('[serverSideRender]', ex);
     // err
     return {
       status: 500,
-      error: ex
+      data: ex
     };
   }
 }
 
-export default renderHtml;
+export default serverSideRender;

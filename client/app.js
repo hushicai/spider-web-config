@@ -9,10 +9,14 @@ import {Router, browserHistory} from 'react-router';
 import {Provider} from 'react-redux';
 import {syncHistoryWithStore} from 'react-router-redux';
 import {routerMiddleware} from 'react-router-redux';
+import createLogger from 'redux-logger';
 import configureStore from './store/configureStore';
 
+const logger = createLogger();
+
 const middlewares = [
-  routerMiddleware(browserHistory)
+  routerMiddleware(browserHistory),
+  logger
 ];
 const store = configureStore(window.__INITIAL_STATE__, middlewares);
 const history = syncHistoryWithStore(browserHistory, store);

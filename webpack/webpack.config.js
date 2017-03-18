@@ -4,6 +4,7 @@
  */
 
 var webpack = require('webpack');
+var WriteFilePlugin = require('write-file-webpack-plugin');
 var path = require("path");
 var isDebug = process.env.NODE_ENV !== 'production';
 var buildPath = path.resolve(__dirname, '../build');
@@ -33,6 +34,7 @@ var config = {
       }
     }),
     ...isDebug ? [
+      new WriteFilePlugin(),
       new webpack.NoEmitOnErrorsPlugin(),
       new webpack.HotModuleReplacementPlugin()
     ] : []
