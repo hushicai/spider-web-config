@@ -7,7 +7,6 @@ const express = require('express');
 const serveStatic = require('serve-static');
 const bodyParser = require('body-parser');
 const {host, port} = require('./settings');
-
 const app = express();
 const serverFile = './build/server';
 
@@ -25,28 +24,32 @@ if (process.env.NODE_ENV !== 'production') {
   const config = require('./webpack/webpack-client.config');
   const compiler = webpack(config);
 
-  app.use(webpackDevMiddleware(compiler, {
+  const clientDevMiddleware = webpackDevMiddleware(compiler, {
     publicPath: config.output.publicPath,
     stats: {
       colors: true
     }
-  }));
-  app.use(webpackHotMiddleware(compiler));
+  });
+  const clientHotMiddleware = webpackHotMiddleware(compiler);
+
+  app.use(clientDevMiddleware);
+  app.use(clientHotMiddleware);
 
   const serverConfig = require('./webpack/webpack-server.config');
   const serverCompiler = webpack(serverConfig);
-
-  app.use(webpackDevMiddleware(serverCompiler, {
+  const serverDevMiddleware = webpackDevMiddleware(serverCompiler, {
     publicPath: serverConfig.output.publicPath,
     stats: {
       colors: true
     }
-  }));
+  });
+
+  app.use(serverDevMiddleware);
 
   serverCompiler.plugin('done', () => {
     console.log("Clearing module cache from server");
 
-    const id = path.resolve(__dirname, serverFile);
+    const id = require.resolve(serverFile);
 
     delete require.cache[id];
   });
@@ -59,7 +62,7 @@ app.use((req, res, next) => {
   return require(serverFile)(req, res, next);
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Node.js app is running at http://${host}:${port}/`);
 });
 

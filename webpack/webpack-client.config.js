@@ -7,10 +7,8 @@ var config = require('./webpack.config');
 var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var merge = require('webpack-merge');
-var isDebug = process.env.NODE_ENV !== 'production';
-
+var {isDev, isTest, isProd, isDebug} = require('./env');
 const {cssLoader, postcssLoader, sassLoader} = require('./loaderConfig');
-
 const entry = ['./client/app.js'];
 
 if (isDebug) {
@@ -26,7 +24,7 @@ var clientConfig = merge(config, {
   },
   module: {
     rules: [
-      isDebug ? {
+      isDev ? {
         test: /\.scss$/,
         use: [
           'style-loader',
@@ -49,17 +47,13 @@ var clientConfig = merge(config, {
   },
   plugins: [
     new ExtractTextPlugin('client.css'),
-    ...isDebug ? [] : [
+    ...isProd ? [
       new webpack.optimize.UglifyJsPlugin({
         compress: {
           warnings: false
         }
       })
-    ],
-    new webpack.DefinePlugin({
-      __CLIENT__: true,
-      __SERVER__: false
-    })
+    ] : []
   ]
 });
 

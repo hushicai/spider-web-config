@@ -6,8 +6,8 @@
 var webpack = require('webpack');
 var WriteFilePlugin = require('write-file-webpack-plugin');
 var path = require("path");
-var isDebug = process.env.NODE_ENV !== 'production';
 var buildPath = path.resolve(__dirname, '../build');
+var {isDev, isTest, isProd, isDebug} = require('./env');
 
 var config = {
   context: path.resolve(__dirname, '../'),
@@ -30,7 +30,7 @@ var config = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        'NODE_ENV': isDebug ? '"development"' : '"production"'
+        'NODE_ENV': isDev ? '"development"' : (isProd ? '"production"' : '"test"')
       }
     }),
     ...isDebug ? [

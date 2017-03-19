@@ -57,12 +57,12 @@
     "build:client": "cross-env NODE_ENV=production webpack --progress --config ./webpack/webpack-client.config.js",
     "build:server": "cross-env NODE_ENV=production webpack --progress --config ./webpack/webpack-server.config.js",
     "build": "npm-run-all -p build:server build:client",
-
-    "dev:server": "cross-env NODE_ENV=development node ./server.js",
-    "prod:server": "cross-env NODE_ENV=production node ./server.js",
-
-    "dev": "npm-run-all dev:server",
-    "prod": "npm-run-all -s build prod:server"
+    "dev:bootstrap": "cross-env NODE_ENV=development node ./bootstrap.js",
+    "prod:bootstrap": "cross-env NODE_ENV=production node ./bootstrap.js",
+    "test:bootstrap": "cross-env NODE_ENV=test node ./bootstrap.js",
+    "dev": "npm-run-all dev:bootstrap",
+    "prod": "npm-run-all -s build prod:bootstrap",
+    "test": "npm-run-all test:bootstrap"
   },
   "repository": {
     "type": "git",

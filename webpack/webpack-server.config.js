@@ -7,11 +7,9 @@ var path = require('path');
 var webpack = require('webpack');
 var config = require('./webpack.config');
 var merge = require('webpack-merge');
-var isDebug = process.env.NODE_ENV !== 'production';
 var nodeExternals = require('webpack-node-externals');
 
 const {cssLoaderLocals, sassLoader, urlLoader} = require('./loaderConfig');
-// const styleCollectorLoader = path.resolve(__dirname, '../tools/styleCollectorLoader');
 
 urlLoader.options.emitFile = false;
 
@@ -31,9 +29,6 @@ var serverConfig = merge(config, {
       {
         test: /\.scss$/,
         use: [
-          // {
-            // loader: styleCollectorLoader
-          // },
           cssLoaderLocals,
           sassLoader
         ]
@@ -51,12 +46,7 @@ var serverConfig = merge(config, {
     __dirname: true,
     __filename: true
   },
-  plugins: [
-    new webpack.DefinePlugin({
-      __CLIENT__: false,
-      __SERVER__: true
-    })
-  ]
+  plugins: []
 });
 
 module.exports = serverConfig;
