@@ -4,21 +4,46 @@
  */
 
 import redis from 'redis';
+// import {flatten, unflatten} from 'flat';
 import settings from '../../settings';
-import getRuleKey from '../../common/getRuleKey';
 import promisify from '../../common/promisify';
 
 const client = redis.createClient(settings.rule_redis_db);
 
-const hmset = promisify(client.hmset, client);
-const hgetall = promisify(client.hgetall, client);
 const keys = promisify(client.keys, client);
 
-export async function add(rule) {
-  const key = getRuleKey(rule);
+// string
+const pdel = promisify(client.del, client);
+const pset = promisify(client.set, client);
+const pget = promisify(client.get, client);
+
+async function __makeTask (key) {
+  try {
+    let result = await pget(key);
+
+    // 转成json格式
+    let rule = JSON.parse(result);
+
+    // result = unflatten(result);
+    // result.id = key;
+
+    return rule;
+  }
+  catch (ex) {
+    console.log(ex);
+
+    return ex;
+  }
+}
+
+export async function create (rule) {
+  const d = JSON.parse(rule);
+  const key = d.id;
 
   try {
-    let result = await hmset(key, rule);
+    // node redis不支持nested hash
+    // 直接存储string吧
+    let result = await pset(key, rule);
 
     return result;
   }
@@ -28,13 +53,13 @@ export async function add(rule) {
   }
 }
 
-async function __makeTask(key) {
+export async function read (key) {
+  let task = __makeTask(key);
+
   try {
-    let result = await hgetall(key);
+    let rule = await task;
 
-    result.id = key;
-
-    return result;
+    return rule;
   }
   catch (ex) {
     console.log(ex);
@@ -43,7 +68,37 @@ async function __makeTask(key) {
   }
 }
 
-export async function getList(callback) {
+export async function update (id, rule) {
+  const d = JSON.parse(rule);
+  const key = d.id;
+
+  console.log(id, key);
+
+  try {
+    if (id != key) {
+       await pdel(id);
+    }
+
+    await pset(key, rule);
+  }
+  catch (ex) {
+    console.log(ex);
+  }
+}
+
+export async function del (key) {
+  try {
+    pdel(key);
+
+    return 0;
+  }
+  catch (ex) {
+    console.log(ex);
+    return 1;
+  }
+}
+
+export async function getList () {
   let result = await keys('rule:*');
   let tasks = result.map((key) => {
     return __makeTask(key)

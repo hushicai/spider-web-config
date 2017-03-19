@@ -6,7 +6,8 @@
 import React, {Component} from 'react';
 import RuleFilter from '../RuleFilter';
 import RuleList from '../RuleList';
-import {getRuleList} from '../../actions';
+import Loading from '../../containers/Loading';
+import {deleteRule, doFilterRule, getRuleList} from '../../actions';
 
 import styles from './FilterRuleTable.scss';
 
@@ -17,14 +18,14 @@ class FilterRuleTable extends Component {
   ]
 
   componentDidMount () {
-    const {loaded} = this.props;
+    const {ruleList} = this.props;
 
-    if (!loaded) {
-      this.props.getRuleList();
+    if (ruleList.length === 0) {
+      this.props.dispatch(getRuleList());
     }
   }
 
-  render() {
+  render () {
     const {
       domain,
       ruleList,
@@ -34,6 +35,7 @@ class FilterRuleTable extends Component {
 
     return (
       <div>
+        <Loading />
         <RuleFilter domain={domain} onFilter={onFilter} />
         <RuleList ruleList={ruleList} onDelete={onDelete} />
       </div>

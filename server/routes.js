@@ -6,6 +6,7 @@ const router = express.Router();
 
 // server api
 router.get('/api-rule/list', ruleController.list);
+router.get('/api-rule/detail', ruleController.detail);
 router.post('/api-rule/add', ruleController.add);
 router.post('/api-rule/edit', ruleController.edit);
 router.post('/api-rule/delete', ruleController.remove);

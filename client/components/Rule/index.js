@@ -13,14 +13,14 @@ class Rule extends Component {
     return (
       <tr>
         <td>{rule.id}</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>{rule.active}</td>
+        <td>{rule['save_page']}</td>
+        <td>{rule['use_proxy']}</td>
+        <td>{rule['page_type']}</td>
+        <td>{rule['handle_js']}</td>
+        <td>{rule['priority']}</td>
+        <td>{rule['weight']}</td>
+        <td>{rule['schedule_interval']}</td>
         <td></td>
         <td>
           <Link to={'/rule/' + rule.id}>Edit</Link>

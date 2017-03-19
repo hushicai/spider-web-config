@@ -23,7 +23,7 @@ function RuleList(props) {
           <th>active</th>
           <th>save content</th>
           <th>use proxy</th>
-          <th>page logic</th>
+          <th>page type</th>
           <th>handle js</th>
           <th>priority</th>
           <th>weight</th>

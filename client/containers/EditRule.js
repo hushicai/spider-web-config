@@ -2,10 +2,9 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import RuleForm from '../components/RuleForm';
 import {editRule} from '../actions';
-import {push} from 'react-router-redux';
 
 const mapStateToProps = (state, ownProps) => {
-  const ruleList = state.ruleList;
+  const ruleList = state.rules.list;
   const id = ownProps.routeParams.id;
 
   let rule = ruleList.find((rule) => {
@@ -21,8 +20,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps =(dispatch, ownProps) => {
   return {
-    onSubmit: (rule, id) => {
-      dispatch(editRule(rule, id));
+    onSubmit: (id, rule) => {
+      dispatch(editRule(id, rule));
     }
   };
 };

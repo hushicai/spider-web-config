@@ -58,15 +58,21 @@ class RuleForm extends Component {
     // Ace Editor Instance
     let editor = ace.editor;
     let rule = JSON.parse(editor.getValue());
-    const key = getRuleKey(rule);
 
-    rule.id = key;
+    rule.id = getRuleKey(rule);
+
+    let ret = [];
 
     // 旧id
     let oid = this.props.routeParams.id;
 
-    // dispatch submit action to store
-    this.props.onSubmit(rule, oid);
+    if (oid) {
+      ret.push(oid);
+    }
+
+    ret.push(rule);
+
+    this.props.onSubmit(...ret);
 
     e.preventDefault();
     e.stopPropagation();
