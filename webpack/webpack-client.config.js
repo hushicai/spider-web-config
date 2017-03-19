@@ -3,11 +3,12 @@
  * @author hushicai(bluthcy@gmail.com)
  */
 
-var config = require('./webpack.config');
-var webpack = require('webpack');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var merge = require('webpack-merge');
-var {isDev, isTest, isProd, isDebug} = require('./env');
+const config = require('./webpack.config');
+const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const AssetsPlugin = require('assets-webpack-plugin');
+const merge = require('webpack-merge');
+const {isDev, isTest, isProd, isDebug} = require('./env');
 const {cssLoader, postcssLoader, sassLoader} = require('./loaderConfig');
 const entry = ['./client/app.js'];
 
@@ -46,6 +47,11 @@ var clientConfig = merge(config, {
     ]
   },
   plugins: [
+    new AssetsPlugin({
+      path: config.output.path,
+      filename: 'assets.js',
+      processOutput: x => `module.exports = ${JSON.stringify(x, null, 2)};`,
+    }),
     new ExtractTextPlugin('client.css'),
     ...isProd ? [
       new webpack.optimize.UglifyJsPlugin({

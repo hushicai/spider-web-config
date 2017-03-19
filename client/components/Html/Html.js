@@ -9,7 +9,8 @@ import styles from './Html.scss';
 
 class Html extends Component {
   render() {
-    const {state, children} = this.props;
+    const {state, assets = {}, children} = this.props;
+    const {js, css} = assets;
 
     return (
       <html>
@@ -19,11 +20,7 @@ class Html extends Component {
           <title>爬虫配置系统</title>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           {
-            (() => {
-              if (process.env.NODE_ENV !== 'development') {
-               return <link rel="stylesheet" href="/client.css" />
-              }
-            })()
+            css && (<link rel="stylesheet" href={css} />)
           }
         </head>
         <body>
@@ -41,7 +38,10 @@ class Html extends Component {
             />
           )}
 
-          <script async src="/client.js"></script>
+          {
+            js && (<script async src={js}></script>)
+          }
+
         </body>
       </html>
     );

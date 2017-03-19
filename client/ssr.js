@@ -19,21 +19,21 @@ import promisify from '../common/promisify';
 
 const pmatch = promisify(match);
 
-const isDebug = process.env.NODE_ENV !== 'production';
-
-function _renderHtml (store, children = '') {
+function _renderHtml (store, assets, children = '') {
   const state = store.getState();
-  const html = ReactDOMServer.renderToStaticMarkup(<Html children={children} state={state} />);
+  const html = ReactDOMServer.renderToStaticMarkup(
+    <Html state={state} assets={assets} children={children}  />
+  );
 
   return html;
 }
 
-async function serverSideRender (url) {
+async function serverSideRender (url, assets) {
   const store = configureStore();
 
   // 开发模式下，不启用重构模式
   if (process.env.NODE_ENV === 'development') {
-    let html = _renderHtml(store);
+    let html = _renderHtml(store, assets);
 
     return {
       status: 200,
@@ -72,7 +72,7 @@ async function serverSideRender (url) {
       </Provider>
     );
 
-    const html = _renderHtml(store, children);
+    const html = _renderHtml(store, assets, children);
 
     return {
       status: 200,

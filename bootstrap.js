@@ -9,6 +9,7 @@ const bodyParser = require('body-parser');
 const {host, port} = require('./settings');
 const app = express();
 const serverFile = './build/server';
+const assetsFile = './build/assets';
 
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -28,7 +29,8 @@ if (process.env.NODE_ENV !== 'production') {
     publicPath: config.output.publicPath,
     stats: {
       colors: true
-    }
+    },
+    serverSideRender: true
   });
   const clientHotMiddleware = webpackHotMiddleware(compiler);
 
@@ -50,8 +52,10 @@ if (process.env.NODE_ENV !== 'production') {
     console.log("Clearing module cache from server");
 
     const id = require.resolve(serverFile);
+    const assets = require.resolve('./build/assets');
 
     delete require.cache[id];
+    delete require.cache[assets];
   });
 }
 else {
@@ -59,6 +63,11 @@ else {
 }
 
 app.use((req, res, next) => {
+  // 这里可以确保构建已经完成
+  const assets = require(assetsFile);
+
+  res.assets = assets.main;
+
   return require(serverFile)(req, res, next);
 });
 
